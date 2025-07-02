@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Web Summarizer - 设置</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1>🤖 Gemini Web Summarizer</h1>
+                <p class="subtitle">智能网页总结和流程图生成工具</p>
+            </div>
+        </header>
+        
+        <main class="main-content">
+            <div class="settings-container">
+                <!-- API设置部分 -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>🔑 API 设置</h2>
+                        <p class="section-description">配置您的Google Gemini API密钥</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="api-key">Gemini API 密钥</label>
+                        <div class="input-group">
+                            <input type="password" id="api-key" placeholder="请输入您的Gemini API密钥">
+                            <button type="button" id="toggle-api-key" class="toggle-btn" title="显示/隐藏密钥">👁️</button>
+                        </div>
+                        <div class="form-help">
+                            <p>🔗 <a href="https://makersuite.google.com/app/apikey" target="_blank">获取API密钥</a></p>
+                            <p>💡 API密钥将安全存储在本地，不会上传到任何服务器</p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="button" id="validate-api-key" class="secondary-btn">
+                            <span class="btn-text">🔍 验证API密钥</span>
+                            <span class="loading-spinner" style="display: none;">⏳</span>
+                        </button>
+                        <div id="api-validation-result" class="validation-result"></div>
+                    </div>
+                </section>
+                
+                <!-- 功能设置部分 -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>⚙️ 功能设置</h2>
+                        <p class="section-description">自定义扩展的行为和功能</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="extension-enabled">
+                            <label for="extension-enabled">启用扩展功能</label>
+                        </div>
+                        <p class="form-help">关闭此选项将禁用所有扩展功能</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="auto-summarize">
+                            <label for="auto-summarize">自动总结页面</label>
+                        </div>
+                        <p class="form-help">页面加载完成后自动生成总结（实验性功能）</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="summary-length">总结长度</label>
+                        <select id="summary-length">
+                            <option value="short">简短 (150-250字)</option>
+                            <option value="medium">中等 (300-500字)</option>
+                            <option value="long">详细 (600-1000字)</option>
+                            <option value="custom">自定义</option>
+                        </select>
+                        <div id="custom-length-options" class="custom-length-options" style="display: none;">
+                            <label for="custom-length-range">自定义字数范围:</label>
+                            <input type="text" id="custom-length-range" placeholder="如: 200-400" maxlength="20">
+                            <p class="form-help">请输入字数范围，格式如: 200-400 或 500</p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="language">界面语言</label>
+                        <select id="language">
+                            <option value="zh-CN">中文 (简体)</option>
+                            <option value="zh-TW">中文 (繁體)</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                </section>
+
+                <!-- 模型设置部分 -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>🤖 模型设置</h2>
+                        <p class="section-description">选择和配置AI模型</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="default-model">默认模型</label>
+                        <select id="default-model">
+                            <option value="gemini-2.5-flash-lite-preview-06-17">Gemini 2.5 Flash Lite (推荐)</option>
+                            <option value="gemini-2.5-flash">Gemini 2.5 Flash (标准)</option>
+                            <option value="gemini-2.5-pro">Gemini 2.5 Pro (高质量)</option>
+                        </select>
+                        <p class="form-help">Flash Lite 提供最佳的速度和成本平衡，推荐日常使用</p>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="enable-thinking">
+                            <label for="enable-thinking">启用思考模式</label>
+                        </div>
+                        <p class="form-help">思考模式可提高回答质量，但会增加响应时间和成本</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="thinking-budget">思考预算 (仅在启用思考模式时有效)</label>
+                        <div class="slider-group">
+                            <input type="range" id="thinking-budget" min="0" max="20000" step="1000" value="10000">
+                            <span id="thinking-budget-value">10000</span>
+                        </div>
+                        <p class="form-help">控制思考过程的最大token数量，0表示动态思考</p>
+                    </div>
+                </section>
+
+                <!-- 提示词设置部分 -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>📝 提示词设置</h2>
+                        <p class="section-description">自定义AI的行为和输出风格</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="summary-prompt-template">总结提示词模板</label>
+                        <select id="summary-prompt-template">
+                            <option value="default">默认模板</option>
+                            <option value="academic">学术风格</option>
+                            <option value="business">商务风格</option>
+                            <option value="casual">轻松风格</option>
+                            <option value="technical">技术风格</option>
+                            <option value="custom">自定义</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custom-summary-prompt">自定义总结提示词</label>
+                        <textarea id="custom-summary-prompt" rows="6" placeholder="请输入自定义的总结提示词模板...
+可用变量：
+{title} - 网页标题
+{url} - 网页URL
+{content} - 网页内容
+{length} - 总结长度要求"></textarea>
+                        <p class="form-help">使用变量来动态插入内容，如 {title} 表示网页标题</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="flowchart-prompt-template">流程图提示词模板</label>
+                        <select id="flowchart-prompt-template">
+                            <option value="default">默认模板</option>
+                            <option value="detailed">详细流程</option>
+                            <option value="simple">简化流程</option>
+                            <option value="decision">决策流程</option>
+                            <option value="custom">自定义</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custom-flowchart-prompt">自定义流程图提示词</label>
+                        <textarea id="custom-flowchart-prompt" rows="6" placeholder="请输入自定义的流程图提示词模板...
+可用变量：
+{title} - 网页标题
+{content} - 网页内容"></textarea>
+                        <p class="form-help">生成Mermaid格式流程图的提示词</p>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="button-group">
+                            <button type="button" id="reset-prompts" class="secondary-btn">🔄 重置为默认</button>
+                            <button type="button" id="test-prompt" class="secondary-btn">🧪 测试提示词</button>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 高级设置部分 -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>🔧 高级设置</h2>
+                        <p class="section-description">高级用户选项</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="api-temperature">AI创造性 (Temperature)</label>
+                        <div class="slider-group">
+                            <input type="range" id="api-temperature" min="0" max="1" step="0.1" value="0.7">
+                            <span id="temperature-value">0.7</span>
+                        </div>
+                        <p class="form-help">较低值产生更一致的结果，较高值产生更有创意的结果</p>
+                    </div>
+                    
+                    <!-- maxOutputTokens 现在由系统自动计算，不再需要用户设置 -->
+                </section>
+                
+                <!-- 数据管理部分 -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>📊 数据管理</h2>
+                        <p class="section-description">管理扩展数据和使用统计</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">总结次数</span>
+                                <span id="summary-count" class="stat-value">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">流程图生成</span>
+                                <span id="flowchart-count" class="stat-value">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">使用天数</span>
+                                <span id="usage-days" class="stat-value">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="button-group">
+                            <button type="button" id="export-settings" class="secondary-btn">📤 导出设置</button>
+                            <button type="button" id="import-settings" class="secondary-btn">📥 导入设置</button>
+                            <button type="button" id="reset-settings" class="danger-btn">🔄 重置设置</button>
+                        </div>
+                        <input type="file" id="import-file" accept=".json" style="display: none;">
+                    </div>
+                </section>
+                
+                <!-- 关于部分 -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>ℹ️ 关于</h2>
+                        <p class="section-description">扩展信息和帮助</p>
+                    </div>
+                    
+                    <div class="about-content">
+                        <div class="version-info">
+                            <p><strong>版本:</strong> 1.0.0</p>
+                            <p><strong>作者:</strong> Gemini Web Summarizer Team</p>
+                            <p><strong>更新时间:</strong> 2025年6月</p>
+                        </div>
+                        
+                        <div class="links">
+                            <a href="#" class="link-btn">📖 使用说明</a>
+                            <a href="#" class="link-btn">🐛 反馈问题</a>
+                            <a href="#" class="link-btn">⭐ 评价扩展</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+        
+        <!-- 保存按钮 -->
+        <div class="save-section">
+            <button type="button" id="save-settings" class="primary-btn">
+                <span class="btn-text">💾 保存设置</span>
+                <span class="loading-spinner" style="display: none;">⏳</span>
+            </button>
+            <div id="save-status" class="save-status"></div>
+        </div>
+        
+        <!-- 确认对话框 -->
+        <div id="confirm-dialog" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3 id="confirm-title">确认操作</h3>
+                <p id="confirm-message">您确定要执行此操作吗？</p>
+                <div class="modal-buttons">
+                    <button id="confirm-yes" class="primary-btn">确定</button>
+                    <button id="confirm-no" class="secondary-btn">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="options.js"></script>
+</body>
+</html>

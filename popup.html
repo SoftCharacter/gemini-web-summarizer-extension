@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Web Summarizer</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="content-wrapper">
+            <header>
+                <h1>🤖 Gemini Web Summarizer</h1>
+            </header>
+
+            <div class="tab-container">
+            <div class="tabs">
+                <button class="tab-button active" data-tab="summary">📝 总结</button>
+                <button class="tab-button" data-tab="flowchart">📊 流程图</button>
+            </div>
+            
+            <div class="tab-content">
+                <!-- 总结标签页 -->
+                <div id="summary-tab" class="tab-pane active">
+                    <div class="action-buttons">
+                        <button id="summarize-btn" class="primary-btn">
+                            <span class="btn-text">📄 总结当前页面</span>
+                            <span class="loading-spinner" style="display: none;">⏳</span>
+                        </button>
+                    </div>
+                    
+                    <div id="summary-result" class="result-container" style="display: none;">
+                        <div class="result-header">
+                            <h3>📋 总结结果</h3>
+                            <button id="copy-summary-btn" class="copy-btn" title="复制总结内容">📋</button>
+                        </div>
+                        <div id="summary-content" class="content-area"></div>
+                    </div>
+                </div>
+                
+                <!-- 流程图标签页 -->
+                <div id="flowchart-tab" class="tab-pane">
+                    <div class="action-buttons">
+                        <button id="generate-flowchart-btn" class="primary-btn">
+                            <span class="btn-text">🔄 生成流程图</span>
+                            <span class="loading-spinner" style="display: none;">⏳</span>
+                        </button>
+                    </div>
+                    
+                    <div id="flowchart-result" class="result-container" style="display: none;">
+                        <div class="result-header">
+                            <h3>📊 流程图</h3>
+                            <div class="chart-controls">
+                                <button id="zoom-in-btn" class="control-btn" title="放大">🔍+</button>
+                                <button id="zoom-out-btn" class="control-btn" title="缩小">🔍-</button>
+                                <button id="reset-zoom-btn" class="control-btn" title="重置">🔄</button>
+                                <button id="download-png-btn" class="control-btn" title="下载PNG">📥PNG</button>
+                                <button id="download-svg-btn" class="control-btn" title="下载SVG">📥SVG</button>
+                            </div>
+                        </div>
+                        <div id="mermaid-container" class="chart-container">
+                            <div id="mermaid-chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 快速设置栏 -->
+        <div class="quick-settings">
+            <div class="quick-setting-item">
+                <label for="quick-model-select">模型:</label>
+                <select id="quick-model-select" class="quick-select">
+                    <option value="gemini-2.5-flash-lite-preview-06-17">⭐ 2.5 Flash Lite (推荐)</option>
+                    <option value="gemini-2.5-flash">2.5 Flash (标准)</option>
+                    <option value="gemini-2.5-pro">2.5 Pro (高质量)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div id="status-message" class="status-message"></div>
+            <button id="settings-btn" class="settings-btn" title="设置">⚙️</button>
+        </div>
+        
+            <!-- API密钥未设置提示 -->
+            <div id="api-key-prompt" class="api-prompt" style="display: none;">
+                <div class="prompt-content">
+                    <h3>🔑 需要设置API密钥</h3>
+                    <p>请先设置您的Gemini API密钥才能使用此功能。</p>
+                    <button id="open-settings-btn" class="primary-btn">前往设置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 本地Mermaid渲染器 -->
+    <script src="lib/mermaid-renderer.js"></script>
+    <!-- 使用修复版脚本 -->
+    <script src="popup-fixed.js"></script>
+</body>
+</html>

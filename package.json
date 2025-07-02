@@ -1,0 +1,32 @@
+{
+  "name": "gemini-web-summarizer-extension",
+  "version": "1.1.0",
+  "description": "Chrome extension for intelligent web page summarization and flowchart generation using Google Gemini AI",
+  "main": "popup.js",
+  "scripts": {
+    "test-renderer": "open test-local-renderer.html"
+  },
+  "keywords": [
+    "chrome-extension",
+    "gemini",
+    "ai",
+    "summarization",
+    "flowchart",
+    "mermaid"
+  ],
+  "author": "Gemini Web Summarizer Team",
+  "license": "MIT",
+
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-repo/gemini-web-summarizer-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/your-repo/gemini-web-summarizer-extension/issues"
+  },
+  "homepage": "https://github.com/your-repo/gemini-web-summarizer-extension#readme",
+
+}

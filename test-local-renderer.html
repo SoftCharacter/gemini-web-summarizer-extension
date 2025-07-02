@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本地Mermaid渲染器测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-input {
+            width: 100%;
+            height: 200px;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .test-output {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background: #f9f9f9;
+            min-height: 300px;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .example-btn {
+            background: #28a745;
+        }
+        .example-btn:hover {
+            background: #1e7e34;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 本地Mermaid渲染器测试</h1>
+        <p>这个页面用于测试本地Mermaid渲染器，验证CSP修复是否成功。</p>
+        
+        <h2>测试输入</h2>
+        <textarea id="mermaidInput" class="test-input" placeholder="在这里输入Mermaid代码...">flowchart TD
+    A[开始] --> B[获取用户输入]
+    B --> C{输入有效?}
+    C -->|是| D[处理数据]
+    C -->|否| E[显示错误]
+    D --> F[保存结果]
+    E --> G[重新输入]
+    F --> H[结束]
+    G --> B</textarea>
+        
+        <div>
+            <button class="btn" onclick="renderTest()">🎨 渲染测试</button>
+            <button class="btn example-btn" onclick="loadExample1()">📝 示例1: 用户注册</button>
+            <button class="btn example-btn" onclick="loadExample2()">🛒 示例2: 订单处理</button>
+            <button class="btn example-btn" onclick="loadExample3()">🔄 示例3: 数据同步</button>
+        </div>
+        
+        <h2>渲染结果</h2>
+        <div id="testOutput" class="test-output">
+            <p style="color: #666; text-align: center; margin-top: 100px;">点击"渲染测试"按钮查看结果</p>
+        </div>
+        
+        <h2>测试信息</h2>
+        <div id="testInfo" style="background: #e9ecef; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px;">
+            等待测试...
+        </div>
+    </div>
+
+    <!-- 加载本地渲染器 -->
+    <script src="lib/mermaid-renderer.js"></script>
+    
+    <script>
+        function renderTest() {
+            const input = document.getElementById('mermaidInput').value;
+            const output = document.getElementById('testOutput');
+            const info = document.getElementById('testInfo');
+            
+            const startTime = performance.now();
+            
+            try {
+                info.innerHTML = '开始渲染测试...<br>';
+                
+                // 检查渲染器是否加载
+                if (typeof window.renderMermaidLocally !== 'function') {
+                    throw new Error('本地渲染器未加载');
+                }
+                
+                info.innerHTML += '渲染器已加载 ✅<br>';
+                
+                // 渲染Mermaid代码
+                const svg = window.renderMermaidLocally(input);
+                
+                const endTime = performance.now();
+                const renderTime = (endTime - startTime).toFixed(2);
+                
+                // 显示结果
+                output.innerHTML = svg;
+                
+                info.innerHTML += `渲染完成 ✅<br>`;
+                info.innerHTML += `渲染时间: ${renderTime}ms<br>`;
+                info.innerHTML += `SVG长度: ${svg.length} 字符<br>`;
+                info.innerHTML += `输入行数: ${input.split('\\n').length}<br>`;
+                
+                // 检查SVG是否有效
+                const parser = new DOMParser();
+                const svgDoc = parser.parseFromString(svg, 'image/svg+xml');
+                const parseError = svgDoc.querySelector('parsererror');
+                
+                if (parseError) {
+                    info.innerHTML += `SVG解析错误 ❌<br>`;
+                } else {
+                    info.innerHTML += `SVG格式有效 ✅<br>`;
+                }
+                
+            } catch (error) {
+                output.innerHTML = `<div style="color: red; padding: 20px;">
+                    <h3>渲染失败</h3>
+                    <p>错误: ${error.message}</p>
+                    <p>请检查Mermaid代码格式或渲染器加载状态。</p>
+                </div>`;
+                
+                info.innerHTML += `渲染失败 ❌<br>错误: ${error.message}<br>`;
+            }
+        }
+        
+        function loadExample1() {
+            document.getElementById('mermaidInput').value = `flowchart TD
+    A[用户访问注册页] --> B[填写注册表单]
+    B --> C{表单验证}
+    C -->|通过| D[创建用户账户]
+    C -->|失败| E[显示错误信息]
+    D --> F[发送验证邮件]
+    E --> B
+    F --> G[用户点击验证链接]
+    G --> H{链接有效?}
+    H -->|是| I[激活账户]
+    H -->|否| J[显示错误页面]
+    I --> K[注册完成]
+    J --> L[结束]
+    K --> L`;
+        }
+        
+        function loadExample2() {
+            document.getElementById('mermaidInput').value = `flowchart TD
+    A[客户下单] --> B[库存检查]
+    B --> C{库存充足?}
+    C -->|是| D[生成订单]
+    C -->|否| E[通知缺货]
+    D --> F[处理支付]
+    F --> G{支付成功?}
+    G -->|是| H[确认订单]
+    G -->|否| I[取消订单]
+    H --> J[安排发货]
+    I --> K[释放库存]
+    J --> L[订单完成]
+    K --> L
+    E --> L`;
+        }
+        
+        function loadExample3() {
+            document.getElementById('mermaidInput').value = `flowchart TD
+    A[启动同步] --> B[连接远程服务器]
+    B --> C{连接成功?}
+    C -->|是| D[获取远程数据]
+    C -->|否| E[重试连接]
+    D --> F[比较本地数据]
+    F --> G{需要更新?}
+    G -->|是| H[下载更新]
+    G -->|否| I[同步完成]
+    H --> J{下载成功?}
+    J -->|是| K[应用更新]
+    J -->|否| L[记录错误]
+    K --> I
+    L --> M[同步失败]
+    E --> N{重试次数<3?}
+    N -->|是| B
+    N -->|否| M`;
+        }
+        
+        // 页面加载时自动运行第一个示例
+        window.addEventListener('load', function() {
+            loadExample1();
+            setTimeout(renderTest, 500);
+        });
+    </script>
+</body>
+</html>
