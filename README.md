@@ -186,7 +186,7 @@ A: 请确认：
 
 - 项目主页: [GitHub Repository]
 - 问题反馈: [GitHub Issues]
-- 邮箱: [your-email@example.com]
+
 
 ---
 
